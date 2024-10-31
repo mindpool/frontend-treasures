@@ -1,0 +1,26 @@
+{
+  "name": "frontend-treasures",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "author": {
+    "name": "Tyrese Luo",
+    "email": "tyreseluo@outlook.com"
+  },
+  "scripts": {
+    "dev": "rspress dev",
+    "build": "rspress build",
+    "preview": "rspress preview",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "rspress": "^1.32.0",
+    "rspress-plugin-reading-time": "^0.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16",
+    "chalk": "^5.3.0",
+    "husky": "^9.1.6",
+    "rspress-plugin-font-open-sans": "^1.0.0"
+  }
+}
