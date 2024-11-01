@@ -1,3 +1,8 @@
 [
-    "index.md"
+    "index.md",
+    {
+        "type": "dir",
+        "name": "basic",
+        "label": "基础部分"
+    }
 ]
