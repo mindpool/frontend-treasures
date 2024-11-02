@@ -1,0 +1,39 @@
+# 参与贡献
+
+:::warning 注意：
+在发起Pull Request前，需要与原始代码库 https://github.com/tyreseluo/frontend-treasures 最新代码保持同步。
+:::
+
+## 基本信息
+
+本项目是基于[Rspress](https://rspress.dev/zh/)的静态站点生成器生成，基于 React 框架进行渲染，具体相关Rspress的特性请查看官网。
+
+- 项目地址：https://github.com/tyreseluo/frontend-treasures
+
+## 贡献规范
+
+所有的文档应该使用 Markdown 格式编写。
+
+:::warning 注意：
+目前项目有`main`和`perview`两个分支，分别对应着`正式版`及`抢先版`文档，PR的提交合并的代码分支请指向`perview`分支，指向`main`分支的代码将不会被合并。
+:::
+
+### 删除远程分支
+
+当你的PR成功合并入`perview`分支后，你可以在Pull Request页面删除个人远程代码中的分支。
+
+```bash
+git push origin --delete the_branch_name
+或
+git push origin :the_branch_name
+```
+
+当然你也可以使用以上命令来删除远程分支。
+
+### 删除本地分支
+
+最后，删除本地分支：
+```bash
+git checkout perview
+git branch -D your_branch_name
+```
