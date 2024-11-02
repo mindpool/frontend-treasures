@@ -4,7 +4,7 @@ import * as fs from 'node:fs';
 const msgPath = process.argv[2];
 const msg = fs.readFileSync(msgPath, 'utf-8').trim();
 
-const commitRE = /^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|release|wip|init)(\(.+\))?: .{1,50}/
+const commitRE = /^(wip|update|add|fix|style|refactor|perf|test|build|ci|feat|chore|release)(\(.+\))?: .{1,50}/
 
 if (!commitRE.test(msg)) {
     console.error(
@@ -15,8 +15,8 @@ if (!commitRE.test(msg)) {
         '  请使用正确的提交格式:\n\n'
       )
       + `${chalk.yellow('Examples:')}\n\n`
-      + `    ${chalk.green('feat: add \'comments\' option')}\n`
-      + `    ${chalk.green('fix: handle events on foucs (close #21)')}\n\n`
+      + `    ${chalk.green('add: add new document')}\n`
+      + `    ${chalk.green('update: update document (question_id)')}\n\n`
       + `${chalk.yellow('See The Team Code Guide for more details.')}\n`
     )
     process.exit(1)
