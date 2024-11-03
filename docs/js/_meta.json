@@ -4,5 +4,10 @@
         "type": "dir",
         "name": "basic",
         "label": "基础部分"
+    },
+    {
+        "type": "dir",
+        "name": "advanced",
+        "label": "高级部分"
     }
 ]
