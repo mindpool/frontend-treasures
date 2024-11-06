@@ -1,0 +1,79 @@
+# #2 如何判断JS的数据类型？
+
+### 1. `typeof`操作符
+
+`typeof`是最常用的方式之一，可以返回一个值的基本类型。适用于区分原始类型（如 string、number 等）和 function 类型。
+
+```javascript
+
+console.log(typeof "hello");        // "string"
+console.log(typeof 42);             // "number"
+console.log(typeof true);           // "boolean"
+console.log(typeof undefined);      // "undefined"
+console.log(typeof Symbol());       // "symbol"
+console.log(typeof null);           // "object"
+console.log(typeof {});             // "object"
+console.log(typeof []);             // "object"
+console.log(typeof function(){})    // "function"
+
+```
+
+> 注意：typeof null 返回 "object"，这是 JavaScript 的一个历史遗留问题，并不意味着 null 是对象。
+
+### 2. `instanceof`操作符
+
+instanceof 用于判断一个对象是否是某个构造函数的实例，通常用于检查复杂数据类型，比如数组和自定义对象。
+
+```javascript
+
+console.log([] instanceof Array);               // true
+console.log({} instanceof Object);              // true
+console.log(new Date() instanceof Date);        // true
+console.log(function(){} instanceof Function);  // true
+console.log(null instanceof Object);            // false (null 不是 Object 的实例)
+console.log(undefined instanceof Object);       // false (undefined 不是 Object 的实例)
+
+```
+
+### 3. `constructor`
+
+每个对象实例都有一个 constructor 属性，指向创建该对象的构造函数，可以用来判断对象类型。
+
+```javascript
+
+console.log((5).constructor === Number);      // true
+console.log("hello".constructor === String);  // true
+console.log([].constructor === Array);        // true
+console.log({}.constructor === Object);       // true
+console.log(new Date().constructor === Date); // true
+
+```
+
+### 4. `Object.prototype.toString.call()`
+
+toString()是 Object 的原型方法，调用该方法，默认返回当前对象的 [object type]。其中 type 就是对象的类型。
+
+```javascript
+
+console.log(Object.prototype.toString.call("hello"));       // "[object String]"
+console.log(Object.prototype.toString.call(42));            // "[object Number]"
+console.log(Object.prototype.toString.call([]));            // "[object Array]"
+console.log(Object.prototype.toString.call({}));            // "[object Object]"
+console.log(Object.prototype.toString.call(null));          // "[object Null]"
+console.log(Object.prototype.toString.call(undefined));     // "[object Undefined]"
+console.log(Object.prototype.toString.call(new Date()));    // "[object Date]"
+console.log(Object.prototype.toString.call(/regex/));       // "[object RegExp]"
+
+
+```
+
+### 5. 一些类自带的判断方法
+
+`Array.isArray()`：Array.isArray() 专门用于检查一个值是否是数组，是检测数组的推荐方式。
+
+```javascript
+
+console.log(Array.isArray([]));       // true
+console.log(Array.isArray({}));       // false
+
+```

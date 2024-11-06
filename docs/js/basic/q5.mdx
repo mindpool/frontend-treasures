@@ -1,0 +1,21 @@
+# #5 String 的 startsWith 和 indexOf两种方法的区别
+
+- **startsWith**
+
+1. 用于判断字符串是否以指定的子字符串开头。
+2. 返回值：`true`或者`false`
+
+- **indexOf**
+
+1. 返回值：子字符串的起始索引位置（如果找到），否则返回`1`
+2. 可以接受两个参数，第一个参数是要查找的子字符串，第二个参数是可选的，示开始搜索的位置。
+
+```javascript
+const str = "Hello, world!";
+console.log(str.indexOf("Hello")); // 0
+console.log(str.indexOf("world", 7)) // 7(从索引7开始查找)
+```
+### 兼容性
+
+- startsWith 是 ES6 引入的，可能不在旧版浏览器中支持。
+- indexOf 在所有 JavaScript 环境中都兼容。
