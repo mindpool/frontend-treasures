@@ -1,5 +1,6 @@
 [
-    "index.md",
+    "mark",
+    "index",
     {
         "type": "dir",
         "name": "basic",
