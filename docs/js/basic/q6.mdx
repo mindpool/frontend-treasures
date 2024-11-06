@@ -1,0 +1,149 @@
+# #6 bind, apply, call 的区别
+
+共性：`bind`、`apply` 和 `call` 是 JavaScript 中用于改变函数上下文 (`this` 指向)的方法。虽然它们的作用类似，但使用场景和行为上有所不同。
+
+- `bind`: 返回一个新的函数，该函数的 this 被永久绑定到指定的对象，且可以接收预设参数。调用时不会立即执行，而是返回一个绑定后的函数。
+
+- `call`：直接调用函数，并且 this 指向指定的对象，参数是逐个传入。
+
+- `apply`: 直接调用函数，this 指向指定的对象，参数以数组形式传入。
+
+```javascript
+function greet(greeting, punctuation) {
+    console.log(`${greeting}, ${this.name}${punctuation}`);
+}
+
+const person = { name: "Alice" };
+
+const boundGreet = greet.bind(person, "Hello"); // 不会立即执行
+boundGreet("!");
+
+greet.call(person, "Hello", "!");
+
+greet.apply(person, ["Hello", "!"]);
+
+```
+### 用法对比
+| 方法 | 是否立即执行 |参数形式 |	返回值|
+| ----- | ---- | ---- | ---- |
+| bind  |	 否	 | 单独列出或部分传参 |	返回绑定后的新函数 |
+| call  |  是	 | 单独列出参数      | 执行并返回函数结果 |
+| apply |	 是	 | 数组形式的参数     |   执行并返回函数结果 |
+
+### 实现
+
+- `bind`
+
+```javascript
+
+Function.prototype.myBind = function(context, ...args) {
+  const func = this;
+  return function(...newArgs) {
+    return func.apply(context, args.concat(newArgs));
+  }
+}
+
+```
+
+- `apply`
+
+```javascript
+
+Function.prototype.myApply = function(context, args) {
+  context = context || window
+  const fn = Symbol();
+  context[fn] = this;
+  const result = context[fn](...args);
+  delete context[fn]
+  return result;
+}
+
+```
+
+- `call`
+
+```javascript
+
+Function.prototype.myCall = function(context, ...args) {
+  context = context || window;      // 如果没有传入上下文，则默认为全局对象
+  const uniqueID = Symbol();        // 创建唯一键，以免属性名冲突
+  context[uniqueID] = this;         // 在上下文中添加一个属性，将函数赋值给这个属性
+  const result = context[uniqueID](...args); // 调用函数
+  delete context[uniqueID]; // 删除新增加的属性
+  return result; //返回结果
+}
+
+```
+### 实际例子
+
+1. `bind` 实际应用：事件处理中的 this 绑定
+在事件处理函数中，this 默认指向触发事件的元素，但有时需要绑定到特定对象，比如组件实例。
+
+```javascript
+const user = {
+  name: "Alice",
+  age: 25,
+  logInfo() {
+    console.log(`Name: ${this.name}, Age: ${this.age}`);
+  }
+};
+
+// 使用 bind 创建绑定后的函数
+const button = document.querySelector("button");
+button.addEventListener("click", user.logInfo.bind(user)); // 输出: Name: Alice, Age: 25
+```
+
+在这个例子中，如果直接传 user.logInfo，this 会指向 button 元素。
+
+而 `bind` 将 `this` 绑定到 user，因此点击按钮时 logInfo 输出的 name 和 age 就是 user 的信息。
+
+2. `call` 实际应用：对象继承方法的复用
+call 可以用来在一个对象上调用另一个对象的方法，从而实现方法的复用。例如，多个对象有相同结构时，可以复用代码。
+
+```javascript
+const person1 = { name: "Alice" };
+const person2 = { name: "Bob" };
+
+function sayHello(greeting) {
+  console.log(`${greeting}, ${this.name}`);
+}
+
+// 使用 call 复用 sayHello 方法
+sayHello.call(person1, "Hello"); // 输出: "Hello, Alice"
+sayHello.call(person2, "Hi");    // 输出: "Hi, Bob"
+```
+
+在这里，`sayHello` 使用 `call` 指向不同对象，从而复用相同的方法。
+
+3. `apply` 实际应用：计算数组的最大/最小值
+
+`apply` 常用于将数组传递给参数数量不固定的函数，例如 Math.max 或 Math.min。这样可以直接求一个数组的最大值或最小值。
+
+```javascript
+const numbers = [5, 2, 9, 3, 7];
+
+const max = Math.max.apply(null, numbers);
+const min = Math.min.apply(null, numbers);
+
+console.log(`Max: ${max}, Min: ${min}`); // 输出: Max: 9, Min: 2
+```
+这里通过 `apply` 把 numbers 数组传入 Math.max 和 Math.min 函数中，求出最大和最小值。
+
+apply 将数组元素分别作为参数传递给函数，这是 call 无法做到的。
+
+4. `bind` 实际应用：预设函数参数
+
+bind 可以预设函数的部分参数，生成一个带有固定参数的新函数（类似“部分应用”）。
+
+```javascript
+function multiply(a, b) {
+  return a * b;
+}
+
+const double = multiply.bind(null, 2); // 固定第一个参数 a = 2
+console.log(double(5)); // 输出: 10 (2 * 5)
+
+const triple = multiply.bind(null, 3); // 固定第一个参数 a = 3
+console.log(triple(5)); // 输出: 15 (3 * 5)
+
+```
