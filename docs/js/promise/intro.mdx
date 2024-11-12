@@ -1,0 +1,123 @@
+# Promise 介绍与基本使用
+
+## 什么是 Promise?
+
+从语法上来说: Promise是一个构造函数，用来生成Promise实例
+
+从功能上来说: Promise对象用来封装一个异步操作并可以获取其成功/
+失败的结果值
+
+:::info 异步操作
+
+- fs 文件操作
+```js
+require('fs').readFile('./index.html', (err, data) => {})
+```
+- 数据库操作
+- AJAX请求
+```js
+$.get('/server', (data)=>{})
+```
+- 定时器
+```js
+setTimeout(() => {
+}, 2000);
+```
+:::
+
+旧方案就是单纯使用的回调函数
+
+Promise是JS中进行异步编程的新解决方案
+
+## 为什么要使用 Promise?
+
+1. 支持链式调用，解决回调地狱问题
+
+```js
+asyncFunction1(opt, (data1) => {
+  asyncFunction2(data1, (data2) => {
+    asyncFunction3(data2, (data3) => {
+        asyncFunction4(data3, (data4) => {
+            // ...
+        })
+    })
+  })
+})
+```
+不便于维护，代码可读性差，错误处理不方便
+
+2. 指定回调函数的方式更加灵活
+
+- 旧的：必须在启动异步任务之前指定回调函数
+- promise：启动异步任务，返回promise对象， 给promise对象绑定回调函数（甚至可以在异步任务结束后指定/多个）
+
+
+## Promise 的基本使用
+
+```js
+const p = new Promise((resolve, reject) => {
+    // 包裹一个异步操作
+    if (/* 异步操作成功 */) {
+        resolve(value) // 将Promise对象的状态改为成功
+    } else {
+        reject(reason) // 将Promise对象的状态改为失败
+    }
+})
+```
+
+`resolve` 和 `reject` 都是函数类型的参数
+
+- `resolve`: 成功时调用
+- `reject`: 失败时调用
+
+异步操作完成后的结果处理, 通过 `then` 方法来指定成功/失败的回调函数
+
+```js
+// 第一个参数是成功的回调，第二个参数是失败的回调
+// p.then(()=>{}, ()=>{})
+
+p.then((value) => {
+    // 成功的回调
+}, (reason) => {
+    // 失败的回调
+})
+```
+
+::: info
+
+`nodejs` 中内置的 `util.promisify` 方法可以将一个遵循异常优先的回调风格的函数转换为一个返回 `Promise` 的函数
+
+```js
+const fs = require('fs')
+const { promisify } = require('util')
+
+const readFile = promisify(fs.readFile)
+
+readFile('./index.html').then((data) => {
+    console.log(data.toString())
+}).catch((err) => {
+    console.log(err)
+})
+```
+
+:::
+
+
+## Promise 的状态
+
+实例对象中的一个属性 `PromiseState`
+- pengding: 初始状态
+- resolved / fulfilled: 成功状态
+- rejected: 失败状态
+
+只有这两种，`pengding -> resolved` 或 `pengding -> rejected`, 一旦状态改变，就不会再变，无论成功还是失败，都会有一个结果值。
+
+## Promise 对象的值
+
+实例对象中的另一个属性 `PromiseResult`
+
+保持着对象成功或失败的结果值
+
+- resolve
+- reject
+
