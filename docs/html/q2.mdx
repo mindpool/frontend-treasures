@@ -1,0 +1,126 @@
+# #2 行级元素和块级元素分别有哪些，如何转换？
+
+## 行级元素（Inline Elements）
+
+行级元素只占据它们内容所需的空间，不会独占一行，多个行级元素可以排在同一行内。
+
+常见的行级元素有：
+
+- **文本格式：** `<a>`、`<strong>`、`<em>`、`<span>`、`<i>`、`<b>`、`<u>`、`<small>`、`<mark>`、`<del>`、`<sub>`、`<sup>` 等
+- **图像及多媒体：** `<img>`、`<audio>`、`<video>`、`<svg>` 等
+- **表单控件：** `<input>`、`<button>`、`<select>`、`<textarea>`、`<label>` 等
+
+## 块级元素（Block-level Elements）
+
+块级元素通常占据其父容器的全部宽度，会独占一行。典型的块级元素包括：
+
+- **结构化标签：** `<div>`、`<p>`、`<header>`、`<footer>`、`<section>`、`<article>`、`<nav>`、`<aside>`、`<main>` 等
+- **标题标签：** `<h1>` 到 `<h6>`
+- **表格元素：** `<table>`、`<tr>`、`<th>`、`<td>` 但 `<th>` 和 `<td>` 在表格中显示为块级行为，但非严格块级）
+- **列表标签：** `<ul>`、`<ol>`、`<li>`
+- **表单容器：** `<form>`
+
+## 如何转换行级元素和块级元素
+
+可以通过 CSS 的 display 属性在行级元素和块级元素之间进行相互转换：
+
+- **行级转块级：** 将`display`属性设置为`block`
+- **块级转行级：** 将`display`属性设置为`inline`或`inline-block`
+
+若想保留块级的宽高设置，可以使用 inline-block：
+
+`inline` vs `inline-block`：
+- `inline`：不会保留块级元素的宽高，宽度随内容自动撑开
+- `inline-block`：支持设置宽高，允许在同一行内排列多个块状元素。
+
+
+## 示例
+
+以下是一些将行级元素和块级元素互相转换的示例：
+
+### 1. 将行级元素转换为块级元素
+
+假设我们有一个 `<span>` 标签（默认是行级元素），可以通过 `display: block` 将它变成块级元素：
+
+```html
+<style>
+  .inline-to-block {
+    display: block;
+    background-color: lightblue;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+</style>
+
+<span class="inline-to-block">This is a span converted to block level</span>
+<p>This paragraph appears below because the span now takes the full width as a block element.</p>
+```
+
+在这个例子中，`<span>` 标签被转换为块级元素，它将独占一行，且可以应用 `padding` 和 `margin`，通常只对块级元素有的布局效果。
+
+### 2. 将块级元素转换为行级元素
+
+假设我们有一个 `<div>` 标签（默认是块级元素），可以通过 `display: inline` 将它变成行级元素：
+
+```html
+<style>
+  .block-to-inline {
+    display: inline;
+    background-color: lightgreen;
+    padding: 5px;
+  }
+</style>
+
+<div class="block-to-inline">This div is now inline</div>
+<div class="block-to-inline">Another inline div</div>
+<p>These divs are now inline and will appear next to each other.</p>
+```
+
+在这个例子中，两个 `<div>` 标签被转换为行级元素，所以它们可以并排显示在同一行上。
+
+### 3. 使用 `inline-block` 保留块级特性但仍保持行内布局
+
+假设我们希望 `<div>` 标签保持其宽高设置（块级元素的特性），但也希望它们可以排列在同一行上，可以使用 `inline-block`：
+
+```html
+<style>
+  .block-to-inline-block {
+    display: inline-block;
+    width: 100px;
+    height: 50px;
+    background-color: coral;
+    margin: 5px;
+    text-align: center;
+    vertical-align: middle;
+  }
+</style>
+
+<div class="block-to-inline-block">Box 1</div>
+<div class="block-to-inline-block">Box 2</div>
+<div class="block-to-inline-block">Box 3</div>
+<p>These boxes are inline-block, so they appear on the same line with set width and height.</p>
+```
+
+在这个例子中，`<div>` 标签被转换为 `inline-block`，它们能够并排显示，同时保留了宽高设置，可以像块级元素一样应用 `width`、`height` 和 `margin` 等样式。
+
+### 4. 列表项转换为行内布局
+
+HTML 列表默认是块级显示。可以将它们转换为行内布局，使列表项横向排列：
+
+```html
+<style>
+  .inline-list {
+    display: inline;
+    padding: 0 10px;
+  }
+</style>
+
+<ul>
+  <li class="inline-list">Item 1</li>
+  <li class="inline-list">Item 2</li>
+  <li class="inline-list">Item 3</li>
+</ul>
+<p>The list items are now displayed in a row due to inline styling.</p>
+```
+
+这样，`<li>` 标签被设置为 `display: inline`，所以列表项可以在同一行中排列。

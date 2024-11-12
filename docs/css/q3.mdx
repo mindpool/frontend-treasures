@@ -1,0 +1,70 @@
+# #3 CSS的属性继承 🔥
+
+1. 什么时候使用继承？
+
+    整个网页做统一的样式调整，统一修改字体大小，颜色，行高等。
+
+2. 哪些属性可以继承？
+
+    文字与字体相关的属性，大多都能被继承
+
+3. 哪些属性不能继承？
+
+    宽高，背景，布局定位等属性
+
+    查询属性是否可以继承，可以查看MDN文档。
+
+4. 属性继承（属性值冲突）
+
+```html
+<div>
+    <h1 class="name">Hello World</h1>
+</div>
+```
+
+```css
+div {
+    color: red;
+    background-color: yellow;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.name {
+    color: blue;
+    font-size: 30px;
+}
+
+h1 {
+    font-size: 40px;
+}
+
+div h1.name {
+    font-size: 50px;
+    font-size: 60px;
+}
+
+```
+
+当浏览器渲染的时候，每一个元素的所有属性都会被计算出来，必须要有值，如果没有设置，那么就会使用默认值。
+
+5. 继承的优先级
+
+- 样式声明（样式表-自定义/浏览器默认样式）
+- 计算层叠（权重问题）
+    - 比较重要性（自己 > 浏览器默认）
+    - 比较特殊性（计算权重值）
+    - 比较源次序（后来者居上）
+- 如果可以从父元素那基础，则继承
+- 使用默认值
+
+上面的例子`h1`最终渲染出来的效果是什么？
+
+- `background-color`    : rgba(0,0,0,0)     4
+- `color`               : blue              1
+- `display`             : block             1
+- `font-size`           : 60px              2
+- `font-weight`         : bold              1
+- `text-align`          : center            3  从父元素继承
+- 其他CSS属性...
