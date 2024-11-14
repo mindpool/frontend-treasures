@@ -1,0 +1,318 @@
+# #7 什么是闭包，有什么作用？
+
+闭包是指引用了另一个函数作用域中变量的函数。
+
+```js
+
+function outerFunction() {
+    let count = 0;
+    function innerFunction() {
+        count++;
+        console.log(count);
+    }
+    return innerFunction;
+}
+let closureExample = outerFunction();
+closureExample();//输出1
+closureExample();//输出2
+
+```
+
+## 闭包的作用
+
+1. 数据的隐藏和封装
+
+闭包可以用于隐藏数据，只暴露特定的方法来访问和修改数据。这类似于面向对象编程中的私有变量。
+例如，在上面的 JavaScript 示例中，变量count在outerFunction外部是无法直接访问的，只能通过innerFunction来修改和访问，这样就实现了一定程度的数据封装。
+
+2. 实现函数工厂
+
+```js
+
+function multipierFactory(factor) {
+    return function(number) {
+        return number * factor;
+    }
+}
+
+let double = multipierFactory(2);
+let triple = multipierFactory(3);
+
+console.log(double(2)); // 4
+console.log(triple(2)); // 6
+```
+
+3. 在异步编程中的应用
+
+```js
+function getData(url, callback) {
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            let data = JSON.parse(xhr.responseText);
+            callback(data);
+        }
+    };
+    xhr.open('GET', url, true);
+    xhr.send();
+}
+
+let urls = ['url1', 'url2', 'url3'];
+
+urls.forEach(url => {
+    getData(url, function(data) {
+        console.log(data);
+    });
+})
+
+```
+
+在这个例子中，对于每个url，传递给getData函数的回调函数就是一个闭包。
+
+它能够访问自己对应的url变量，即使getData函数已经执行完毕，回调函数也能在异步请求完成后正确地处理数据并引用对应的url。
+
+## 闭包的缺点
+
+1. 内存泄漏的风险
+
+闭包会引用外部函数的变量，使得这些变量无法被垃圾回收机制正常回收。如果不合理地使用闭包，可能会导致内存占用过高。例如：
+
+```js
+
+function outer() {
+    let largeObject = { data: new Array(10000000) };
+    return function() {
+        console.log(largeObject.data.length);
+    }
+}
+
+let closure = outer();
+// 即使outer函数执行完毕，largeObject也不会被回收，因为closureFn还引用它
+```
+在这个例子中，outer函数返回的闭包函数closureFn引用了largeObject。
+如果这个闭包一直存在并且不再需要largeObject，那么largeObject占用的内存就无法被释放，可能会导致内存泄漏。
+
+2. 性能问题
+
+由于闭包需要额外的资源来维护变量的引用环境，在一些性能敏感的场景下可能会产生性能开销。
+
+当频繁地创建和销毁闭包时，会增加内存管理和变量查找的成本。例如，在一个循环中创建大量闭包的情况：
+
+```js
+
+function createClosures() {
+    let functions = [];
+    for (let i = 0; i < 1000; i++) {
+        functions.push(function() {
+            return i;
+        });
+    }
+    return functions;
+}
+let closures = createClosures();
+console.log(closures[0]());
+console.log(closures[999]());
+
+```
+在这个例子中，循环创建了 1000 个闭包，每个闭包都引用了i变量。这会导致浏览器或者 JavaScript 引擎需要为这些闭包维护一个引用环境，增加了内存和性能的负担。
+
+并且在这个特定的例子中，由于闭包捕获的是变量i的引用，而不是值，可能会出现不符合预期的结果（所有闭包返回的i值都是 1000）。
+
+## 闭包的应用场景
+
+1. 函数柯里化
+
+函数柯里化是把一个多参数的函数转换为一系列单参数函数的技术。闭包在其中起到了关键作用，它可以 “记住” 之前传入的参数。
+
+```js
+
+function add(a) {
+    return function(b) {
+        return a + b;
+    }
+}
+
+let add5 = add(5);
+console.log(add5(2)); // 7
+console.log(add5(3)); // 8
+```
+
+2. 事件处理程序
+
+在图形用户界面（GUI）编程中，当为多个元素绑定事件处理程序时，常常需要每个处理程序都能访问特定的数据。闭包可以帮助实现这一点，使得每个事件处理程序都能保持自己独立的状态。
+
+```html
+<ul id="myList">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+</ul>
+```
+
+```js
+let list = document.getElementById("myList");
+let items = list.getElementsByTagName("li");
+for (let i = 0; i < items.length; i++) {
+    (function(index) {
+        items[index].addEventListener("click", function() {
+            console.log("Clicked on item " + (index + 1));
+        });
+    })(i);
+}
+```
+
+在这个例子中，通过立即执行函数表达式（IIFE）创建了闭包。每个闭包都 “记住” 了自己对应的index值，这样当列表项被点击时，事件处理程序就能正确地显示该列表项的索引。
+
+3. 缓存计算结果
+
+对于一些计算成本较高的函数，可以利用闭包来缓存计算结果，避免重复计算。
+
+```js
+
+function fibonacci() {
+    let cache = {};
+    return function(n) {
+        if (n in cache) {
+            return cache[n];
+        }
+        if (n === 0 || n === 1) {
+            return n;
+        }
+        let result = fibonacci()(n - 1)+ fibonacci()(n - 2);
+        cache[n]= result;
+        return result;
+    };
+}
+let fib = fibonacci();
+console.log(fib(5));
+
+```
+
+这里fibonacci函数返回的内部函数是一个闭包，它可以访问和更新cache对象。当计算斐波那契数列的某一项时，首先检查cache中是否已经有了结果，如果有就直接返回，否则进行计算并将结果存入cache，这样后续相同的计算就可以直接从缓存中获取结果，提高了计算效率。
+
+4. 实现私有变量和方法（面向对象编程替代方案）
+
+```js
+
+function Counter() {
+    let count = 0;
+    return {
+        increment: function() {
+            count++;
+        },
+        decrement: function() {
+            count--;
+        },
+        getCount: function() {
+            return count;
+        }
+    };
+}
+
+```
+
+这里的count变量和increment、decrement、getCount方法都是Counter函数的局部变量和内部函数，外部无法直接访问，只能通过返回的对象来操作和获取数据。这样就实现了一定程度的数据封装和隐藏，类似于面向对象编程中的私有变量和方法。
+
+## 如何避免闭包的内存泄漏？
+
+1. 理解内存泄漏产生的原因
+
+在使用闭包时，由于闭包会引用外部函数中的变量，使得这些变量无法被垃圾回收机制正常回收。例如在 JavaScript 中：
+
+```js
+
+function outer() {
+    let largeObject = {data: new Array(1000000)};
+    return function() {
+        console.log(largeObject.data.length);
+    };
+}
+let closureFn = outer();
+// 即使outer函数执行完毕，largeObject也不会被回收，因为closureFn还引用它
+```
+
+这里closureFn闭包函数引用了outer函数中的largeObject，只要closureFn存在，largeObject就不会被垃圾回收。
+
+2. 及时释放不再需要的闭包引用
+
+在适当的时候将引用设为 null
+当不再需要闭包时，可以手动将闭包引用的变量设为null，这样垃圾回收机制就可以回收这些变量所占用的内存。例如：
+
+```js
+function outer() {
+    let someData = {value: 123};
+    let closureFn = function() {
+        console.log(someData.value);
+    };
+    return closureFn;
+}
+let myClosure = outer();
+myClosure();
+// 不再需要闭包和相关数据时
+myClosure = null;
+```
+
+3. 避免循环引用
+
+在 DOM 元素和闭包之间避免循环引用
+
+当在事件处理程序等闭包中使用this引用 DOM 元素时，容易出现循环引用。例如：
+
+```js
+function setupListeners() {
+    let elements = document.getElementsByTagName('div');
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].onclick = function() {
+            // 这里的this指向当前被点击的div元素
+            console.log(this);
+        };
+    }
+}
+setupListeners();
+```
+
+- 一般情况下，这种代码不会导致内存泄漏。但是如果在闭包中做了更多复杂的操作，比如在闭包内部又引用了一个包含this（DOM 元素）的对象，就可能产生循环引用。
+- 为避免这种情况，可以使用WeakMap（在支持的环境中）。WeakMap的键是弱引用，不会阻止垃圾回收。例如：
+
+```js
+
+function setupListeners() {
+    let elements = document.getElementsByTagName('div');
+    let elementData = new WeakMap();
+    for (let i = 0; i < elements.length; i++) {
+        let element = elements[i];
+        elementData.set(element, {
+            // 一些数据可以放在这里
+            count: 0
+        });
+        element.onclick = function() {
+            let data = elementData.get(this);
+            data.count++;
+            console.log(data.count);
+        };
+    }
+}
+setupListeners();
+
+```
+
+- 在对象和闭包之间避免循环引用
+
+假设有一个对象和一个闭包，它们相互引用：
+```js
+
+function createObjectWithClosure() {
+    let obj = {};
+    let closureFn = function() {
+        console.log(obj);
+    };
+    obj.someMethod = closureFn;
+    return obj;
+}
+let myObject = createObjectWithClosure();
+// 要避免内存泄漏，需要在合适的时候解除引用
+delete myObject.someMethod;
+myObject = null;
+
+```
+这里myObject和closureFn相互引用，需要手动解除这种引用关系，如代码最后所示，先删除对象中的方法引用，再将对象设为null，以便垃圾回收机制能够正常回收内存。
