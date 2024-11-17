@@ -1,1 +1,24 @@
 # async 与 await
+
+## async
+
+- async 函数返回一个 Promise 对象
+- promises 对象的结果由 async 函数执行的返回值决定
+
+三种情况：
+1. 如果返回值是一个值，那么 Promise 对象的状态是 resolved，返回值是值；
+2. 如果返回值是一个 Promise 对象，那么 Promise 对象的状态是 resolved，返回值是这个 Promise 对象的返回值；
+如果返回值是一个 rejected 状态的 Promise 对象，那么 Promise 对象的状态是 rejected，返回值是这个 Promise 对象的返回值。
+3. 如果 async 函数抛出异常，那么 Promise 对象的状态是 rejected，返回值是抛出的异常。
+
+## await
+
+- await 右侧的表达式一般是一个 Promise 对象， 返回对应promise的结果。
+- await 右侧是其他类型的值，会直接返回这个值。
+
+:::info 注意
+
+- await 只能在 async 函数中使用, 但是 async 函数中可以没有 await 语句。
+- 如果await 的 promise 失败了，就会抛出异常，可以通过 try...catch 来捕获异常。
+
+:::
