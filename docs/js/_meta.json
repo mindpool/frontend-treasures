@@ -5,5 +5,10 @@
         "type": "dir",
         "name": "basic",
         "label": "基础部分"
+    },
+    {
+        "type": "dir",
+        "name": "promise",
+        "label": "Promise"
     }
 ]

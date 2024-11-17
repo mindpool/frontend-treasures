@@ -1,0 +1,115 @@
+# Promise API
+
+## 1. Promise 构造函数： Promise(executor) {}
+
+- `executor`：执行器函数，同步执行，传入两个参数：`resolve` 和 `reject`
+- `resolve`：成功时调用
+- `reject`：失败时调用
+
+::: info 说明
+
+executor 会在 Promise 内部立即同步调用，异步操作会在 executor 中执行
+
+```js
+
+let p = new Promise((resolve, reject) => {
+    console.log('executor')
+    resolve('success')
+})
+console.log('end')
+
+// executor
+// end
+
+```
+
+:::
+
+## 2. Promise.prototype.then(onResolved, onRejected) => {}
+
+- `onResolved`：成功的回调函数
+- `onRejected`：失败的回调函数
+
+::: info 说明
+
+指定用于得到成功value的回调函数和用于得到失败reason的回调函数，返回一个新的Promise对象
+
+:::
+
+## 3. Promise.prototype.catch(onRejected) => {}
+
+- `onRejected`：失败的回调函数
+
+## 4. Promise.resolve(value) => {}
+
+- `value`：成功的数据或者Promise对象
+
+::: info 说明
+
+返回一个成功/失败的Promise对象
+
+- 如果出入的是非Promise对象，则返回一个成功的Promise对象
+- 如果传入的是一个Promise对象，则参数的状态决定了返回的Promise对象的状态
+
+:::
+
+## 5. Promise.reject(reason) => {}
+
+- `reason`：失败的原因
+
+::: info 说明
+
+返回一个失败的Promise对象
+
+:::
+
+## 6. Promise.all(promises) => {}
+
+- `promises`：Promise对象组成的数组
+
+::: info 说明
+
+- 返回一个新的Promise对象， 只有所有的Promise对象都成功才会成功，只要有一个失败就会失败
+
+:::
+
+
+## 7. Promise.race(promises) => {}
+
+- `promises`：Promise对象组成的数组
+
+::: info 说明
+
+- 返回一个新的Promise对象，第一个完成的Promise对象的状态决定了返回的Promise对象的状态及结果
+
+:::
+
+## 8. Promise.allSettled(promises) => {}
+
+- `promises`：Promise对象组成的数组
+
+::: info 说明
+
+- 返回一个新的Promise对象，只有所有的Promise对象都结束才会结束，不管成功还是失败
+
+:::
+
+## 9. Promise.any(promises) => {}
+
+- `promises`：Promise对象组成的数组
+
+::: info 说明
+
+- 返回一个新的Promise对象，只要有一个成功就会成功，所有的都失败才会失败
+
+:::
+
+## 10. Promise.prototype.finally(onFinally) => {}
+
+- `onFinally`：回调函数
+
+::: info 说明
+
+- 无论Promise对象最后的状态如何，都会执行的回调函数
+
+:::
