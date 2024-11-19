@@ -10,7 +10,4 @@ hero:
     - theme: alt
       text: GitHub
       link: https://github.com/tyreseluo/front-end-treasures
-  image:
-    src: /rspress-icon.png
-    alt: Front End Treasures Logo
 ---

@@ -1,0 +1,62 @@
+# Promise 的几个关键问题
+
+## 1. 如何改变 Promise 的状态？
+
+1. `resolve(value)`：将 Promise 对象的状态改为成功
+2. `reject(reason)`：将 Promise 对象的状态改为失败
+3. `throw new Error('error')`：抛出异常，将 Promise 对象的状态改为失败
+
+
+## 2. 一个promise指定多个成功/失败回调函数，都会调用吗？
+
+- 都会调用，但是调用的顺序是按照指定的回调函数的顺序来调用的
+
+```js
+
+let p = new Promise((resolve, reject) => {
+    resolve('success')
+})
+
+p.then((value) => {
+    console.log('onResolved1', value)
+});
+
+p.then((value) => {
+    console.log('onResolved2', value)
+});
+
+// onResolved1 success
+// onResolved2 success
+```
+## 3. 改变 Promise 状态和指定回调函数的时序问题，谁先谁后？
+
+1. 都有可能，正常情况下是先指定回调函数，再改变状态，但也可以先改变状态，再指定回调函数
+2. 如何先改变状态，再指定回调函数？
+    - 在执行器中直接调用 resolve 或 reject
+    - 延迟更长时间才调用 then
+3. 什么时候才能得到数据？
+    - 如果先指定的回调函数，那么当状态发生改变时，回调函数会立即调用，得到数据
+    - 如果先改变状态，那么当指定回调函数时，回调函数会立即调用，得到数据
+
+## 4. promise.then() 返回的新promise的结构状态由什么决定？
+
+- 由 then() 指定的回调函数执行的结果决定
+- 详细：
+    - 如果抛出异常，新 promise 的状态为失败，reason 为抛出的异常
+    - 如果返回的是非 promise 对象，新 promise 的状态为成功，value 为返回的值
+    - 如果返回的是 promise 对象，新 promise 的状态和 value 随着这个 promise 对象的状态和 value 改变
+
+## 5. promise 如何串连多个操作任务？
+
+- promise 的 then() 返回一个新的 promise，可以串连多个 then()，每个 then() 都可以指定成功/失败的回调函数
+- 通过 then() 的链式调用可以解决回调地狱问题
+
+
+## 6. promise 异常穿透？
+
+1. 当使用 promise 的链式调用时，可以在最后指定失败的回调函数
+2. 前面任何操作出现异常，都会传透到最后失败的回调函数中处理
+
+## 7. 中断 promise 链
+
+1. 在 then() 中返回一个 pending 状态的 promise 对象

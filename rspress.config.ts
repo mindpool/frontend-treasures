@@ -11,17 +11,14 @@ export default defineConfig({
   title: 'Front End Treasures',
   description: 'Front End Treasures',
   icon: '/rspress-icon.png',
-  logo: {
-    light: '/rspress-light-logo.png',
-    dark: '/rspress-dark-logo.png',
-  },
   plugins: [
     readingTime({defaultLocale: 'zh-CN'}),
     pluginFontOpenSans()
   ],
   themeConfig: {
     socialLinks: [
-      { icon: 'github', mode: 'link', content: 'https://github.com/tyreseluo/front-end-treasures' },
+      { icon: 'github', mode: 'link', content: 'https://github.com/mindpool/frontend-treasures/' },
     ],
+    lastUpdated: true,
   },
 });
