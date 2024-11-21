@@ -1,0 +1,105 @@
+#  Clipboard API
+
+剪贴板 Clipboard API 提供了响应剪贴板命令（剪切、复制和粘贴）与异步读写系统剪贴板的能力。
+
+:::info 注意
+
+从权限`Permission API` 获取权限之后，才能使用剪贴板 API，如果用户没有授予权限，则不允许读取或更改剪贴板内容。
+
+:::
+
+## Clipboard API 的主要接口
+
+- `Clipboard` 和 `navigator.clipboard`：表示一个剪贴板对象，可以读取或写入剪贴板内容。返回一个`Promise`对象。
+- `ClipboardItem`：表示一个剪贴板项，可以包含多种数据类型。
+- `ClipboardEvent`：表示一个剪贴板事件，当剪贴板内容发生变化时触发。
+
+
+
+## Clipboard 实例方法
+
+除了实例化一个`Clipboard`对象之外，还可以使用`navigator.clipboard`属性访问剪贴板。
+
+### readText()、writeText()、read() 和 write()
+
+```js
+navigator.clipboard
+  .readText()
+  .then((text) => {})
+```
+
+当`readText()` 和 `read()` 不是文本时，会返回一个空字符串，所以说这段代码是安全的。
+
+写入剪贴板内容：
+
+```js
+navigator.clipboard.writeText('Hello, world!')
+  .then(() => {
+    console.log('Text copied to clipboard');
+  })
+  .catch(err => {
+    console.error('Failed to copy text: ', err);
+  });
+```
+
+## ClipboardEvent
+
+当剪贴板内容发生变化时，会触发`ClipboardEvent`事件。
+
+```js
+doucment.addEventListener('paste', (event) => {
+  e.preventDefault();
+  navigator.clipboard.writeText('Not allowed to paste');
+});
+
+document.addEventListener('copy', (event) => {
+  e.preventDefault();
+  navigator.clipboard.writeText('Not allowed to copy');
+});
+
+```
+不是文本时的情况：
+
+```js
+editor.addEventListener('paste', (event) => {
+  if (event.clipboardData.files.length > 0) {
+    event.preventDefault();
+    navigator.clipboard.writeText('Not allowed to paste files');
+  }
+})
+```
+
+其中 `event.clipboardData` 是一个`DataTransfer`对象，包含了剪贴板中的数据。
+
+- `dropEffect`：获取当前选定的拖放操作类型或者设置的为一个新的类型。值必须为 none, copy, link 或 move。
+- `effectAllowed`：提供所有可用的操作类型。必须是 none, copy, copyLink, copyMove, link, linkMove, move, all or uninitialized 之一。
+- `files`：包含数据传输中可用的所有本地文件的列表。如果拖动操作不涉及拖动文件，则此属性为空列表。
+- `items`：提供一个包含所有拖动数据列表的 DataTransferItemList 对象。
+- `types`：返回一个包含数据传输中可用的所有数据类型的列表。
+
+## ClipboardItem
+
+`ClipboardItem` 对象表示一个剪贴板项，可以包含多种数据类型。
+
+```js
+const item = new ClipboardItem({
+  'image/png': new Blob([imageData], { type: 'image/png' }),
+  'text/plain': new Blob(['Hello, world!'], { type: 'text/plain' })
+});
+
+navigator.clipboard.write([item])
+  .then(() => {
+    console.log('Copied successfully');
+  })
+  .catch(err => {
+    console.error('Copy failed', err);
+  });
+```
+
+## 兼容性
+
+- Chrome 66+
+- Firefox 63+
+- Safari 13.1+
+- Edge 79+
+- Opera 53+
