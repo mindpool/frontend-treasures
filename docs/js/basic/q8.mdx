@@ -1,0 +1,70 @@
+# #8 数组去重的方法
+
+## 1. 使用 `Set`
+
+`Set` 是 ES6 新增的数据结构，类似于数组，但是他的一大特性就是所有元素都是唯一的，没有重复。
+
+可以将一个数组转换为 `Set`，然后再将其转换为数组，这样就可以去除数组中的重复元素。
+
+```js
+let arr = [1, 2, 3, 3, 4, 4, 5];
+let uniqueArr = [...new Set(arr)];
+console.log(uniqueArr); // [1, 2, 3, 4, 5]
+```
+## 2. 使用`filter`方法来遍历数组，只保留第一次出现的元素
+
+```js
+let arr = [1, 2, 3, 3, 4, 4, 5];
+let uniqueArr = arr.filter((item, index, self) => self.indexOf(item) === index);
+console.log(uniqueArr); // [1, 2, 3, 4, 5]
+```
+
+## 3. 使用`reduce`方法逐个遍历数组元素，构建-个新的数组，只添加第一次出现的元素。
+
+```js
+let arr = [1, 2, 3, 3, 4, 4, 5];
+let uniqueArr = arr.reduce((acc, cur) => {
+  if (!acc.includes(cur)) {
+    acc.push(cur);
+  }
+  return acc;
+}, []);
+
+console.log(uniqueArr); // [1, 2, 3, 4, 5]
+```
+
+## 4. 使用`Map`数据结构
+
+`Map` 是一种键值对的集合，类似于对象，但是键不局限于字符串，可以是任意类型的值。
+
+可以遍历数组，将数组元素作为键存储到 `Map` 中，然后再将 `Map` 中的键转换为数组。
+
+```js
+let arr = [1, 2, 3, 3, 4, 4, 5];
+let uniqueArr = Array.from(new Map(arr.map(item => [item, item])).values());
+console.log(uniqueArr); // [1, 2, 3, 4, 5]
+```
+
+## 5. 使用`indexOf`方法来遍历数组，对于每个元愫，检查其在数组中的索引，如果第一次出现，则添加到新数组。
+
+```js
+let arr = [1, 2, 3, 3, 4, 4, 5];
+let uniqueArr = [];
+arr.forEach(item => {
+  if (uniqueArr.indexOf(item) === -1) {
+    uniqueArr.push(item);
+  }
+});
+```
+
+## 6. 使用`includes`方法来遍历数组，对于每个元素，检查其是否已经存在于新数组中，如果不存在，则添加到新数组。
+
+```js
+let arr = [1, 2, 3, 3, 4, 4, 5];
+let uniqueArr = [];
+arr.forEach(item => {
+  if (!uniqueArr.includes(item)) {
+    uniqueArr.push(item);
+  }
+});
+```
