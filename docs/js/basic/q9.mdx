@@ -1,0 +1,107 @@
+# #9 `var` 、`let` 和 `const` 的区别是什么？
+
+
+## `var` 关键字
+
+在ES6之前，JavaScript中只有`var`关键字用来声明变量，但是`var`声明的变量存在一些问题。
+
+1. 当 var 变量在函数外部声明时，作用域是全局的。这意味着在函数体外用`var`声明的任何变量都可以在整个窗口中使用。
+2. var 变量可以被重复声明和修改，这可能会导致变量被意外覆盖。
+
+```js
+var x = 10;
+var x = 20; // No error
+x = 30; // No error
+```
+
+3. var 变量提升。在函数内部，无论变量声明在哪里，都会被视为在函数的顶部声明。
+
+```js
+console.log(x); // undefined
+var x = 10;
+
+// 实际上等价于
+var x;
+console.log(x); // undefined
+x = 10;
+```
+
+由于这些问题，ES6引入了`let`和`const`关键字来解决`var`的一些问题。
+
+## `let`关键字
+
+`let`现在是我们在JavaScript中声明变量的首选方式，它是对`var`的改进，同时还是解决了`var`存在的一些问题。
+
+1. `let`声明的变量具有块级作用域，只在声明的块内部有效。
+
+```js
+{
+    let x = 10;
+    console.log(x); // 10
+}
+
+console.log(x); // ReferenceError: x is not defined
+```
+
+2. `let`不允许重复声明同一个变量。
+
+```js
+let x = 10;
+let x = 20; // SyntaxError: Identifier 'x' has already been declared
+```
+
+3. `let`不会变量提升。
+
+```js
+console.log(x); // ReferenceError: x is not defined
+let x = 10;
+```
+
+## `const`关键字
+
+用 `const` 声明的变量保持恒定值。`const` 声明与 `let` 声明有一些相似之处。
+
+1. `const`声明的变量也具有块级作用域。
+
+```js
+{
+    const x = 10;
+    console.log(x); // 10
+}
+
+console.log(x); // ReferenceError: x is not defined
+```
+
+2. `const`声明的变量必须进行初始化，且不能再次赋值。
+
+```js
+const x = 10;
+x = 20; // TypeError: Assignment to constant variable
+```
+
+3. `const`声明的变量不会变量提升。
+
+```js
+console.log(x); // ReferenceError: x is not defined
+const x = 10;
+```
+
+## 总结
+
+- `var`声明的变量存在一些问题，如变量提升、全局作用域等。
+- `let`是`var`的改进，具有块级作用域、不会变量提升、不允许重复声明等特性。
+- `const`声明的变量是常量，不允许再次赋值，其他特性与`let`相似, 它不改变变量的存储方式，只是增加了赋值限制，所以对于复杂类型的变量，只是限制了变量的引用地址不变，而不是引用的对象不变。
+
+以下是`const`对于复杂类型的限制：
+
+```js
+const obj = { name: 'Alice' };
+obj.name = 'Bob'; // No error
+
+obj = { name: 'Bob' }; // TypeError: Assignment to constant variable
+
+const arr = [1, 2, 3];
+arr.push(4); // No error
+
+arr = [4, 5, 6]; // TypeError: Assignment to constant variable
+```
