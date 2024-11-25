@@ -1,0 +1,112 @@
+# 扁平化
+
+## 什么是扁平化？
+
+扁平化是指将数据组织为一维数组或对象的过程。
+
+## 什么是数组扁平化？
+
+```js
+['a','b','c'] //这是一个拥有3个元素的数组，是一个一维数组（不存在数组嵌套）。
+[['a','b','c'],['d','e','f']] //这是一个拥有2个元素的数组，是一个二维数组（存在数组嵌套）。
+// 其他维度的数组以此类推。
+```
+
+那么数组扁平化就是将多维数组转换为一维数组的过程。
+
+## 数组扁平化的方法
+
+### 1. es6 flat(?depth)
+
+```js
+let a = [1, [2, [3, 4]]];
+a.flat(); // [1, 2, [3, 4]]
+a.flat(2); // [1, 2, 3, 4]
+
+// 直接使用 infinity 作为参数，可以将任意维度的数组扁平化为一维数组。
+a.flat(Infinity); // [1, 2, 3, 4]
+```
+:::info Infinity
+
+是JS中的一个特殊值，表示无穷大，可以用来表示任意大的数值。
+
+:::
+
+### 2. for循环
+
+```js
+let a = [1, [2, [3, 4]]];
+function flatten(arr) {
+  let result = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (Array.isArray(arr[i])) {
+      result = result.concat(flatten(arr[i]));
+    } else {
+      result.push(arr[i]);
+    }
+  }
+  return result;
+}
+flatten(a); // [1, 2, 3, 4]
+```
+
+### 3. while循环
+
+```js
+let a = [1, [2, [3, 4]]];
+function flatten(arr) {
+  let result = [];
+  while (arr.length) {
+    let item = arr.shift();
+    if (Array.isArray(item)) {
+      arr = item.concat(arr);
+    } else {
+      result.push(item);
+    }
+  }
+  return result;
+}
+flatten(a); // [1, 2, 3, 4]
+```
+
+### 4. reduce
+
+```js
+let a = [1, [2, [3, 4]]];
+function flatten(arr) {
+  return arr.reduce((result, item) => {
+    return result.concat(Array.isArray(item) ? flatten(item) : item);
+  }, []);
+}
+flatten(a); // [1, 2, 3, 4]
+```
+
+### 5. toString
+
+```js
+let a = [1, [2, [3, 4]]];
+a.toString().split(',').map(item => +item); // [1, 2, 3, 4]
+```
+
+### 6. join
+
+```js
+let a = [1, [2, [3, 4]]];
+a.join().split(',').map(item => +item); // [1, 2, 3, 4]
+```
+
+### 7. 正则
+```js
+let a = [1, [2, [3, 4]]];
+JSON.parse('[' + JSON.stringify(a).replace(/\[|\]/g, '') + ']'); // [1, 2, 3, 4]
+```
+
+### 8. 扩展运算符
+```js
+let a = [1, [2, [3, 4]]];
+
+while (a.some(Array.isArray)) {
+  a = [].concat(...a);
+}
+a; // [1, 2, 3, 4]
+```
