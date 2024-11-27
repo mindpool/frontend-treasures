@@ -15,5 +15,10 @@
         "type": "dir",
         "name": "promise",
         "label": "Promise"
+    },
+    {
+        "type": "dir",
+        "name": "mini-function",
+        "label": "小功能函数"
     }
 ]
