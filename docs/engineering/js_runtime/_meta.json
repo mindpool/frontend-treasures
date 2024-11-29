@@ -1,8 +1,3 @@
 [
-  "index",
-  {
-    "type": "dir",
-    "name": "node",
-    "label": "Node.js"
-  }
+  "index"
 ]
