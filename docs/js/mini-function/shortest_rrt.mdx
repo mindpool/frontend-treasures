@@ -1,0 +1,56 @@
+# 找出RTT最短的IP地址
+
+有很多IP地址，如何最快找出RTT最短的IP地址呢？
+
+假设最大并发数为10
+
+```javascript
+
+function chunk(arr, size) {
+  return Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+    arr.slice(i * size, i * size + size)
+  );
+}
+
+async function race(ips, maxTime) {
+  return new Promise((resolve) => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    setTimeout(() => {
+      resolve(null);
+      // 取消请求
+      controller.abort();
+    }, maxTime)
+    let start = Date.now();
+    for (const ip of ips) {
+      fetch(`http://${ip}`, {signal}).then((res) => {
+        const rtt = Date.now() - start;
+        resolve({
+          rtt,
+          ip
+        })
+        controller.abort();
+      })
+    }
+  })
+}
+
+
+async function findShortestRTT(ips, parallelCount = 10) {
+  // 对IP地址分组 [ [ip1, ip2, ip3], [ip4, ip5, ip6], ... ]
+  const ipChunks = chunk(ips, parallelCount);
+  let result = {
+    rtt: Infinity,
+    ip: ''
+  }
+
+  for (const chunk of ipChunks) {
+    const temp = await race(chunk, result.rtt)
+    if (temp) {
+      result = temp;
+    }
+  }
+
+  return result.ip;
+}
+```
