@@ -4,7 +4,8 @@
     {
         "type": "dir",
         "name": "basic",
-        "label": "基础部分"
+        "label": "基础部分",
+        "collapsed": true
     },
     {
         "type": "dir",
@@ -14,7 +15,8 @@
     {
         "type": "dir",
         "name": "promise",
-        "label": "Promise"
+        "label": "Promise",
+        "collapsed": true
     },
     {
         "type": "dir",
