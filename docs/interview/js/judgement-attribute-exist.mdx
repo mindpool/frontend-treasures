@@ -1,0 +1,85 @@
+# 如何判断一个属性是否存在?
+
+## 布尔判断 （有问题）
+
+```js
+const obj = { name: '张三' }
+
+if (obj.name) {
+  console.log('name 属性存在')
+} else {
+  console.log('name 属性不存在')
+}
+```
+如果属性值为 `0`、`false`、`null`、`undefined`、`NaN` 时，判断结果会有问题。
+
+能用，但是你能确定传入的属性不会传入这些值。
+
+## undefined（有问题）
+
+```js
+const obj = { name: '张三' }
+
+if (obj.name !== undefined) {
+  console.log('name 属性存在')
+} else {
+  console.log('name 属性不存在')
+}
+```
+
+这种方法可以判断属性是否存在，但是如果属性值为 `undefined` 时，判断结果会有问题。
+
+## Object.keys() （有问题）
+
+```js
+
+const obj = { name: '张三' }
+
+if (Object.keys(obj).includes('name')) {
+  console.log('name 属性存在')
+} else {
+  console.log('name 属性不存在')
+}
+```
+
+如果不可枚举的属性，也会返回 `false`。
+
+属性描述符中的 `enumerable` 为 `false` 时，也会返回 `false`。
+
+## Object.prototype.hasOwnProperty(), Reflect.hasOwnProperty()
+
+```js
+const obj = { name: '张三' }
+
+if (obj.hasOwnProperty('name')) {
+  console.log('name 属性存在')
+} else {
+  console.log('name 属性不存在')
+}
+```
+
+能判断自身属性，但是不能判断原型链上的属性，`Reflect.hasOwnProperty()` 也是一样。
+
+## `in` 和 Reflect.has()
+
+```js
+const obj = { name: '张三' }
+
+if ('name' in obj) {
+  console.log('name 属性存在')
+} else {
+  console.log('name 属性不存在')
+}
+```
+
+能判断自身属性和原型链上的属性，`Reflect.has()` 也是一样。
+
+## 总结
+
+判断属性是否存在，看你要不要看原型链上的属性，
+
+- 如果不需要，使用 `Object.prototype.hasOwnProperty()` 或 `Reflect.hasOwnProperty()`
+- 如果需要，使用 `in` 或 `Reflect.has()`。
+
+
+
