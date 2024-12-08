@@ -15,12 +15,6 @@
     {
         "type": "dir",
         "name": "promise",
-        "label": "Promise",
-        "collapsed": true
-    },
-    {
-        "type": "dir",
-        "name": "mini-function",
-        "label": "小功能函数"
+        "label": "Promise"
     }
 ]
